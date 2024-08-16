@@ -112,3 +112,65 @@ darkModeToggle.addEventListener('click', () => {
 if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');
 }
+
+// Filtered Projects
+const filterButtons = document.querySelectorAll('.filter-btn');
+const projectItems = document.querySelectorAll('.filtered-project-grid .project-item');
+
+filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const filter = button.getAttribute('data-filter');
+        
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        projectItems.forEach(item => {
+            if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+});
+
+// Testimonial Slider
+let currentTestimonial = 0;
+const testimonials = document.querySelectorAll('.testimonial');
+const totalTestimonials = testimonials.length;
+
+function showTestimonial(index) {
+    testimonials.forEach(testimonial => testimonial.style.display = 'none');
+    testimonials[index].style.display = 'block';
+}
+
+function nextTestimonial() {
+    currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
+    showTestimonial(currentTestimonial);
+}
+
+function previousTestimonial() {
+    currentTestimonial = (currentTestimonial - 1 + totalTestimonials) % totalTestimonials;
+    showTestimonial(currentTestimonial);
+}
+
+showTestimonial(currentTestimonial);
+setInterval(nextTestimonial, 5000); // Auto-advance every 5 seconds
+
+// You can add navigation buttons for the testimonial slider if desired
+document.querySelector('.next-testimonial').addEventListener('click', nextTestimonial);
+document.querySelector('.prev-testimonial').addEventListener('click', previousTestimonial);
+
+// Enhance existing animations for new sections
+const newFadeInElements = document.querySelectorAll('#filtered-projects .fade-in, #blog .fade-in, #skills .fade-in, #testimonials .fade-in');
+const newFadeInObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+        }
+    });
+}, { threshold: 0.1 });
+
+newFadeInElements.forEach(element => {
+    newFadeInObserver.observe(element);
+});
